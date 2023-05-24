@@ -21,7 +21,7 @@ export default class Momazos extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
-        const { fisico } = nextProps;
+        const { Momazos } = nextProps;
         if (prevState.currentMomazos.id !== Momazos.id){
             return{
                 currentMomazos: Momazos,
