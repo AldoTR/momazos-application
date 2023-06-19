@@ -29,6 +29,7 @@ export default class Momazos extends Component {
         currentMomazos: momazos,
         message: ""
       };
+
     }
 
     return prevState.currentMomazos;
