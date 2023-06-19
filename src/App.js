@@ -5,10 +5,8 @@ import './index.css';
 import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Memes from "./components/show-momazos";
-import MomazosADD from "./components/add-momazos.component.js";
 import MomazosList from "./components/momazos-list.component.js";
 import Login from './components/google_singin';
-import LoginWithGoogle from "./components/google_singin";
 
 class App extends Component {
   render() {
