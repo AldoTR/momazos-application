@@ -1,0 +1,8 @@
+Okteto Token:
+
+geJhJUuAtpDH7cSbMryceYzUqjZ5zc32uRD38rat0P6Vq5PD
+
+Mongo links:
+
+my-kafka-0.my-kafka-headless.aldotr.svc.cluster.local:9092
+mongodb+srv://aldotr:abduzcan10@nosql.h9q3jgy.mongodb.net/?retryWrites=true&w=majority
