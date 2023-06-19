@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import MomazosDataService from "../services/momazos-service";
 
 import Momazos from "./momazos.component";
-import Reaction from "./reactions.component";
-import Com from "./comentarios.component";
 
 export default class MomazosList extends Component {
   constructor(props) {
 
     super(props);
     this.refreshList = this.refreshList.bind(this);
-    this.setActiveTutorial = this.setActiveTutorial.bind(this);
+    this.setActiveMomazos = this.setActiveMomazos.bind(this);
     this.onDataChange = this.onDataChange.bind(this);
 //  this.state = this.state.bind(this);
 
@@ -57,52 +55,39 @@ export default class MomazosList extends Component {
     });
   }
 
-  setActiveTutorial(momazos, index) {
+  setActiveMomazos(memes, index) {
     this.setState({
-      currentMomazos : momazos,
+      currentMomazos : memes,
       currentIndex : index,
     })
     console.log(this.state);
   }
 
   render() {
-    const { momazos, currentMomazos} = this.state;
+    const { momazos, currentMomazos, currentIndex } = this.state;
 
     return (
-      <div className="row">
+      <div className="list row">
         <div className="col-md-6">
-          <h4>Todos los momazos</h4>
+          <h4>Momazos List</h4>
 
           <ul className="list-group">
             {momazos &&
-              momazos.map((momazo, index) => (
+              momazos.map((meme, index) => (
                 <li
+                  className={ "list-group-item " + (index === currentIndex ? "active" : "") }
+                  onClick={() => this.setActiveMomazos(meme, index)}
                   key={index}
-                  className="styleItemofList"
                 >
-                  <div onClick={() => this.setActiveTutorial(momazo, index)}
-                  >
-                  <div className="styleTitlePublication">{momazo.title}</div>
-                  <p>{momazo.description}</p>
-                  <div>
-                    {momazo.url? <img className="styleImagePublication" alt="Preview" height="300px" src={momazo.url} /> : null }
-                  </div>
-                  <div>
-                    <hr />
-                    <Reaction/>
-                    <Com/>
-                  </div>
-                  </div>
-
+                  {meme.title}
                 </li>
               ))}
           </ul>
         </div>
         <div className="col-md-6">
-          <ul className="columnStatic">
           {currentMomazos ? (
             <Momazos
-              momazo={currentMomazos}
+              momazos={currentMomazos}
               refreshList={this.refreshList}
             />
           ) : (
@@ -111,7 +96,6 @@ export default class MomazosList extends Component {
               <p>Haz click en un momazo</p>
             </div>
           )}
-          </ul>
         </div>
       </div>
     );

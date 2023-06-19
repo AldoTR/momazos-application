@@ -2,189 +2,192 @@ import React, { Component } from "react";
 import MomazosDataService from "../services/momazos-service";
 
 export default class Momazos extends Component {
-    constructor(props) {
-        super(props);
-        this.onChangeTitle = this.onChangeTitle.bind(this);
-        this.onChangeDescripton = this.onChangeDescripton.bind(this);
-        this.updatePublished = this.updatePublished.bind(this);
+  constructor(props) {
+    super(props);
+    this.onChangeTitle = this.onChangeTitle.bind(this);
+    this.onChangeDescription = this.onChangeDescription.bind(this);
+    this.updatePublished = this.updatePublished.bind(this);
+    this.updateMomazos = this.updateMomazos.bind(this);
+    this.deleteMomazos = this.deleteMomazos.bind(this);
 
-        this.state = {
-            currentMomazos: {
-                id: null,
-                title:"",
-                description:"",
-                published: false,
-            },
-            message:"",
-        };
+    this.state = {
+      currentMomazos: {
+        id: null,
+        title: "",
+        description: "",
+        published: false,
+        url: ""
+      },
+      message: "",
+    };
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { momazos } = nextProps;
+    if (prevState.currentMomazos.id !== momazos.id) {
+      return {
+        currentMomazos: momazos,
+        message: ""
+      };
 
     }
+    return prevState.currentMomazos;
+  }
 
-    static getDerivedStateFromProps(nextProps, prevState){
-        const { Momazos } = nextProps;
-        if (prevState.currentMomazos.id !== Momazos.id){
-            return{
-                currentMomazos: Momazos,
-                message:""
-            };
-        }
+  componentDidMount() {
+    this.setState({
+      currentMomazos: this.props.momazos,
+    });
+  }
 
-        return prevState.currentMomazos;
-    }
+  onChangeTitle(e) {
+    const title = e.target.value;
 
-    componentDisMount(){
-        this.setState({
-            currentMomazos: this.props.fisico,
-        });
-    }
+    this.setState(function (prevState) {
+      return {
+        currentMomazos: {
+          ...prevState.currentMomazos,
+          title: title,
+        },
+      };
+    });
+  }
 
-    onChangeTitle(e){
-        const title = e.target.value;
+  onChangeDescription(e) {
+    const description = e.target.value;
 
-        this.setState(function (prevState){
-            return {
-                currentMomazos: {
-                    ...prevState.currentMomazos,
-                    title:title,
-                },
-            };
-        });
-    }
+    this.setState((prevState) => ({
+      currentMomazoss: {
+        ...prevState.currentMomazos,
+        description: description,
+      },
+    }));
+  }
 
-    onChangeDescripton(e){
-        const description = e.target.value;
-
-        this.setState(function (prevState){
-            return {
-                currentMomazos:{
-                    ...prevState.currentMomazos,
-                    description:description,
-                },
-            };
-        });
-    }
-
-
-    updatePublished(status){
-        MomazosDataService.update(this.state.currentMomazos.id, {
+  updatePublished(status) {
+    MomazosDataService.update(this.state.currentMomazos.id, {
+      published: status,
+    })
+      .then(() => {
+        this.setState((prevState) => ({
+          currentMomazos: {
+            ...prevState.currentMomazos,
             published: status,
-        }).then(()=>{
-            this.setState((prevState)=>({
-                currentMomazos: {
-                    ...prevState.currentMomazos,
-                    published: status,
-                },
-                message: "The status was update successfully!",
-            }));
-        }).catch((e)=>{
-            console.log(e);
+          },
+          message: "The status was updated successfully!",
+        }));
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
+
+  updateMomazos() {
+    const data = {
+      title: this.state.currentMomazos.title,
+      description: this.state.currentMomazos.description,
+    };
+
+    MomazosDataService.update(this.state.currentMomazos.id, data)
+      .then(() => {
+        this.setState({
+          message: "El meme fue subido exitosamente",
         });
-    }
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
-    updateMomazos(){
-        //const onDataChange={
-        //    title: this.state.currentMomazos.title,
-        //    description: this.state.currentMomazos.description
-        //};
+  deleteMomazos() {
+    MomazosDataService.delete(this.state.currentMomazos.id)
+      .then(() => {
+        this.props.refreshList();
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+  }
 
-        MomazosDataService.update(this.state.currentMomazos.id, {
-            title: this.state.currentMomazos.title,
-            description: this.state.currentMomazos.description
-        }).then(()=>{
-            this.setState({
-                message: "The tutorial was updated successfully!",
-            });
-        }).catch((e)=>{
-            console.log(e);
-        });
-    }
+  render() {
+    const { currentMomazos } = this.state;
 
-    deleteMomazos(){
-        MomazosDataService.delete(this.state.currentMomazos.id)
-        .then(()=>{
-            this.props.refreshList();
-        }).catch((e)=>{
-            console.log(e);
-        });
-    }
+    return (
+      <div>
+        <h4>Momazos</h4>
+        {currentMomazos ? (
+          <div className="edit-form">
+            <form>
+              <div className="form-group">
+                <label htmlFor="title">Title</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="title"
+                  value={currentMomazos.title}
+                  onChange={this.onChangeTitle}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="description">Description</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="description"
+                  value={currentMomazos.description}
+                  onChange={this.onChangeDescription}
+                />
+              </div>
 
-    render(){
-        const { currentMomazos } = this.state;
-        return (
-            <div>
-                <br/>
-                <h4>Momazo Seleccionado</h4>
-                {currentMomazos ? (
-                    <div className="edit-form">
-                        <form>
-                            <div className="form-group">
-                                <label htmlFor="title">Title</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="title"
-                                    value={currentMomazos.title}
-                                    onChange={this.onChangeTitle}
-                                />
-                            </div>
-                            <div className="form-group">
-                                <label htmlFor="description">Description</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    id="description"
-                                    value = {currentMomazos.description}
-                                    onChange={this.onChangeDescripton}
-                                />
-                            </div>
 
-                            <div className="form-group">
-                                <label>
-                                    <strong>Status:</strong>
-                                </label>
-                                {currentMomazos.published ? "Published" : "Pending"}
-                            </div>
-                        </form>
 
-                        {currentMomazos.published ? (
-                            <button
-                                className="badge badge-primary mr-2"
-                                onClick={()=> this.updatePublished(false)}
-                            >
-                                UnPublish
-                            </button>
-                        ):(
-                            <button
-                                className="badge badge-primary mr-2"
-                                onClick={()=> this.updatePublished(true)}
-                            >
-                                Publish
-                            </button>
-                        )}
+              <div className="form-group">
+                <label>
+                  <strong>Status:</strong>
+                </label>
+                {currentMomazos.published ? "Published" : "Pending"}
+              </div>
+            </form>
 
-                        <button
-                            className="badge badge-danger mr-2"
-                            onClick={()=>this.deleteMomazos()}
-                        >
-                            Delete
-                        </button>
+            {currentMomazos.published ? (
+              <button
+                className="badge badge-primary mr-2"
+                onClick={() => this.updatePublished(false)}
+              >
+                UnPublish
+              </button>
+            ) : (
+              <button
+                className="badge badge-primary mr-2"
+                onClick={() => this.updatePublished(true)}
+              >
+                Publish
+              </button>
+            )}
 
-                        <button
-                            type="submit"
-                            className="badge badge-success"
-                            onClick={()=>this.updateMomazos()}
-                        >
-                            Update
-                        </button>
-                        <p>{this.state.message}</p>
-                    </div>
-                ):(
-                    <div>
-                        <br />
-                        <p>Haz click en un momazo</p>
-                    </div>
-                )}
-            </div>
-        );
-    }
+            <button
+              className="badge badge-danger mr-2"
+              onClick={this.deleteMomazos}
+            >
+              Delete
+            </button>
+
+            <button
+              type="submit"
+              className="badge badge-success"
+              onClick={this.updateMomazos}
+            >
+              Update
+            </button>
+            <p>{this.state.message}</p>
+          </div>
+        ) : (
+          <div>
+            <br />
+            <p>Haz click en una estrella</p>
+          </div>
+        )}
+      </div>
+    );
+  }
 }

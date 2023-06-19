@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import MomazosDataService from "../services/momazos-service";
-
 import "firebase/compat/storage";
 import firebase  from "firebase/compat/app";
 export const storage = firebase.storage();
@@ -32,29 +31,22 @@ export default class ADDMomazos extends Component {
         });
     }
 
-    
     handleUpload(e, file) {
         e.preventDefault();
         console.log(file);
         alert(file.name);
-    
-        const uploadTask = storage.ref('/images/' + file.name).put(file);
-    
-        uploadTask.on("state_changed", console.log, console.error, () =>  {
-           storage
+        const uploadTask = storage.ref('/images/'+file.name).put(file);
+        uploadTask.on("state_changed", console.log, console.error, ()=>{
+          storage
                 .ref("images")
                 .child(file.name)
                 .getDownloadURL()
-                .then((myurl) =>  {
-                    this.setState({
-                        url : myurl
-                    }) 
-                        //this.state.url=myurl;
-                 });
-    
+                .then((myurl)=>{
+                  alert(myurl);
+                  this.setState({ url: myurl });
+                });
         });
-    
-    }
+      }
 
     onChangeTitle(e){
         this.setState({
@@ -65,12 +57,6 @@ export default class ADDMomazos extends Component {
     onChangeDescription(e){
         this.setState({
             description: e.target.value,
-        });
-    }
-    
-    onChangeURL(e){
-        this.setState({
-            url: e.target.value,
         });
     }
 
@@ -100,7 +86,6 @@ export default class ADDMomazos extends Component {
             published: false,
             url:"",
             submitted: false,
-            file:"",
         });
     }
 
