@@ -1,14 +1,14 @@
-import firebase from "../firebase";
+import {firestore} from "../firebase";
 
-const db = firebase.collection("Momazos");
+const db = firestore.collection("/momazos");
 
 class MomazosDataService{
     getAll(){
         return db;
     }
 
-    create(Momazos){
-        return db.add(Momazos);
+    create(momazos){
+        return db.add(momazos);
     }
 
     update(id, value){
