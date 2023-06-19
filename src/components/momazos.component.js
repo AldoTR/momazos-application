@@ -31,7 +31,6 @@ export default class Momazos extends Component {
       };
 
     }
-
     return prevState.currentMomazos;
   }
 
